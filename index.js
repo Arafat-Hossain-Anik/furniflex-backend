@@ -78,9 +78,11 @@ app.post('/login', async (req, res) => {
                 //cookie section
                 const cookieOption = {
                     httpOnly: true,
-                    sameSite: 'None',
+                    sameSite: 'None', // Required for cross-site cookies in production
+                    secure: true, // Ensures cookies are only sent over HTTPS
                     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-                }
+                };
+
                 // res.cookie("token", `bearer ${token}`, cookieOption)
                 res.status(200).cookie("token", `bearer ${token}`, cookieOption).json({ message: "Login Successful", user })
             }
@@ -104,9 +106,10 @@ app.post('/google-login', async (req, res) => {
         //cookie section
         const cookieOption = {
             httpOnly: true,
-            sameSite: 'None',
+            sameSite: 'None', // Required for cross-site cookies in production
+            secure: true, // Ensures cookies are only sent over HTTPS
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-        }
+        };
         // res.cookie("token", `bearer ${token}`, cookieOption)
         res.status(200).cookie("token", `bearer ${token}`, cookieOption).json({ message: "Login Successful", user })
 
