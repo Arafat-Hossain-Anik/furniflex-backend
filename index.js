@@ -16,6 +16,8 @@ app.use(cors(
     {
         origin: 'https://furni-flex-web-app.web.app',
         credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     }
 ))
 const port = process.env.PORT;
@@ -76,6 +78,7 @@ app.post('/login', async (req, res) => {
                 //cookie section
                 const cookieOption = {
                     httpOnly: true,
+                    sameSite: 'None',
                     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
                 }
                 // res.cookie("token", `bearer ${token}`, cookieOption)
@@ -101,6 +104,7 @@ app.post('/google-login', async (req, res) => {
         //cookie section
         const cookieOption = {
             httpOnly: true,
+            sameSite: 'None',
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
         }
         // res.cookie("token", `bearer ${token}`, cookieOption)
