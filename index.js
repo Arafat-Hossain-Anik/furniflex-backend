@@ -14,7 +14,11 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors(
     {
-        origin: 'https://furni-flex-web-app.web.app',
+        origin: [
+            'https://furni-flex-web-app.web.app',
+            'https://furni-flex-web-app.firebaseapp.com',
+            'http://localhost:5173'
+        ],
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],
@@ -22,6 +26,11 @@ app.use(cors(
 ))
 const port = process.env.PORT;
 
+const cookieOption = {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    secure: process.env.NODE_ENV === "production" ? true : false
+};
 // api end points
 app.post('/signup', async (req, res) => {
     try {
@@ -76,13 +85,6 @@ app.post('/login', async (req, res) => {
                 )
                 user.token = token
                 //cookie section
-                const cookieOption = {
-                    httpOnly: true,
-                    sameSite: 'None', // Required for cross-site cookies in production
-                    secure: true, // Ensures cookies are only sent over HTTPS
-                    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-                };
-
                 // res.cookie("token", `bearer ${token}`, cookieOption)
                 res.status(200).cookie("token", `bearer ${token}`, cookieOption).json({ message: "Login Successful", user })
             }
@@ -98,18 +100,12 @@ app.post('/login', async (req, res) => {
 app.post('/google-login', async (req, res) => {
     try {
         const user = req.body;
+        console.log("google login userdata", user);
         const token = jwt.sign(
             { user },
             process.env.JWT_SECRET
         )
         user.token = token
-        //cookie section
-        const cookieOption = {
-            httpOnly: true,
-            sameSite: 'None', // Required for cross-site cookies in production
-            secure: true, // Ensures cookies are only sent over HTTPS
-            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
-        };
         // res.cookie("token", `bearer ${token}`, cookieOption)
         res.status(200).cookie("token", `bearer ${token}`, cookieOption).json({ message: "Login Successful", user })
 
@@ -122,7 +118,7 @@ app.get('/verify-user', checkUser, (req, res) => {
     res.status(200).json({ user });
 })
 app.get('/logout', (req, res) => {
-    console.log("api hitted");
+    console.log("logout api hitted");
     res.clearCookie('token');
     res.json({ message: 'Logged out successfully' });
 });
