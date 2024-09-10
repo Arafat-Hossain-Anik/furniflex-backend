@@ -114,7 +114,7 @@ app.get('/verify-user', checkUser, (req, res) => {
 })
 app.get('/logout', (req, res) => {
     console.log("logout api hitted");
-    res.clearCookie('token');
+    res.clearCookie('token', cookieOption);
     res.json({ message: 'Logged out successfully' });
 });
 
