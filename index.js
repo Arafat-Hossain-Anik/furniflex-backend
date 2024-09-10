@@ -19,17 +19,15 @@ app.use(cors(
             'https://furni-flex-web-app.firebaseapp.com',
             'http://localhost:5173'
         ],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true
     }
 ))
-const port = process.env.PORT;
+const port = process.env.PORT || 7000;
 
 const cookieOption = {
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-    secure: process.env.NODE_ENV === "production" ? true : false
+    sameSite: process.env?.NODE_ENV === "production" ? "none" : "strict",
+    secure: process.env?.NODE_ENV === "production" ? true : false
 };
 // api end points
 app.post('/signup', async (req, res) => {
@@ -84,8 +82,6 @@ app.post('/login', async (req, res) => {
                     process.env.JWT_SECRET
                 )
                 user.token = token
-                //cookie section
-                // res.cookie("token", `bearer ${token}`, cookieOption)
                 res.status(200).cookie("token", `bearer ${token}`, cookieOption).json({ message: "Login Successful", user })
             }
             else {
@@ -106,7 +102,6 @@ app.post('/google-login', async (req, res) => {
             process.env.JWT_SECRET
         )
         user.token = token
-        // res.cookie("token", `bearer ${token}`, cookieOption)
         res.status(200).cookie("token", `bearer ${token}`, cookieOption).json({ message: "Login Successful", user })
 
     } catch (error) {
